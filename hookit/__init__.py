@@ -21,6 +21,7 @@ from cgi import parse_qs
 from subprocess import call
 
 from docopt import docopt
+from github3 import GitHub
 
 from BaseHTTPServer import HTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
@@ -28,9 +29,18 @@ from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 args = docopt(__doc__, version=0.1)
 
+gh = GitHub()
+github_info = gh.meta()
+
+str(github_info['hooks'][0]).split('/')[0]
+
+str(github_info['hooks'][0]).split('/')[1]
+
 WHITELIST = [
-    ('192.30.252.0', 22),
-    ('204.232.175.64', 27)
+    (
+        str(github_info['hooks'][0]).split('/')[0],
+        str(github_info['hooks'][0]).split('/')[1]
+    )
 ]
 
 

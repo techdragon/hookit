@@ -4,12 +4,12 @@ from setuptools import setup
 
 setup(
     name='hookit',
-    version='0.7',
+    version='0.7.1',
     packages=['hookit'],
     license='MIT License',
     keywords='git github webhook webhooks',
     description='Bind GitHub WebHooks to actions',
-    install_requires=['docopt >= 0.6.0'],
+    install_requires=['docopt >= 0.6.0', 'github3py >= 0.9.0'],
     author='William Tisäter',
     author_email='william@defunct.cc',
     url='https://github.com/tiwilliam/hookit',
