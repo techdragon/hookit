@@ -103,19 +103,20 @@ class HookHandler(SimpleHTTPRequestHandler):
         # Read POST data
         length = int(self.headers.getheader('Content-Length'))
         data = self.rfile.read(length)
-        logging.error(length)
-        logging.error(type(data))
-        logging.error(data)
+        # logging.error(length)
+        # logging.error(type(data))
+        # logging.error(data)
 
         # Parse POST data and get payload
-        payload = parse_qs(data).get('payload', None)
-        logging.error(payload)
+        # payload = parse_qs(data).get('payload', None)
+        # logging.error(payload)
 
-        post_data = urlparse.parse_qs(self.rfile.read(length).decode('utf-8'))
-        logging.error(type(post_data))
-        logging.error(post_data)
+        # post_data = urlparse.parse_qs(self.rfile.read(length).decode('utf-8'))
+        # logging.error(type(post_data))
+        # logging.error(post_data)
 
-        payload = json.loads(post_data['payload'][0])
+        # payload = json.loads(post_data['payload'][0])
+        payload = json.loads(data)
         logging.error(payload)
 
         if not payload:
@@ -138,12 +139,19 @@ class HookHandler(SimpleHTTPRequestHandler):
 
 def hook_trigger(payload):
     ref = payload['ref']
+    logging.error(ref)
     after = payload['after']
+    logging.error(after)
     repo = payload['repository']['name']
+    logging.error(repo)
     branch = ref.split('/')[-1]
+    logging.error(branch)
 
     jail = os.path.abspath(args['--scripts'])
+    logging.error(jail)
     trigger = os.path.abspath('%s/%s/%s' % (jail, repo, branch))
+    logging.error(trigger)
+
 
     # Check if absolute trigger path resides in jail directory
     if not os.path.commonprefix([trigger, jail]).startswith(jail):
