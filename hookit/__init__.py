@@ -17,7 +17,7 @@ import struct
 import socket
 import logging
 import os.path
-import urllib
+import urlparse
 from cgi import parse_qs
 from subprocess import call
 
