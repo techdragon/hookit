@@ -73,6 +73,8 @@ def webhook_from_github(client):
     # IP addresses as they are at the time the webhook was recieved.
     github_info = gh.meta()
     github_network = str(github_info['hooks'][0])
+    print github_info
+    print client
 
     if IPAddress(client) in IPNetwork(github_network):
         return True
