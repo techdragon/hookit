@@ -32,14 +32,16 @@ args = docopt(__doc__, version=0.1)
 gh = GitHub()
 github_info = gh.meta()
 
-str(github_info['hooks'][0]).split('/')[0]
-
-str(github_info['hooks'][0]).split('/')[1]
+# this is the slice query to get the info out of the api return
+# ip address
+# str(github_info['hooks'][0]).split('/')[0]
+# subnet size
+# str(github_info['hooks'][0]).split('/')[1]
 
 WHITELIST = [
     (
         str(github_info['hooks'][0]).split('/')[0],
-        str(github_info['hooks'][0]).split('/')[1]
+        int(github_info['hooks'][0]).split('/')[1]
     )
 ]
 
