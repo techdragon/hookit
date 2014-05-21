@@ -95,6 +95,7 @@ class HookHandler(SimpleHTTPRequestHandler):
         # Reject all requests from non-Github IPs
         # if not in_whitelist(self.client_address[0]):
         if not webhook_from_github(self.client_address[0]):
+            logger.error("Webhook came from untrusted IP!")
             self.send_forbidden()
             return
 
