@@ -102,9 +102,12 @@ class HookHandler(SimpleHTTPRequestHandler):
         # Read POST data
         length = int(self.headers.getheader('Content-Length'))
         data = self.rfile.read(length)
+        logger.error(length)
+        logger.error(data)
 
         # Parse POST data and get payload
         payload = parse_qs(data).get('payload', None)
+        logger.error(payload)
         if not payload:
             self.send_forbidden()
             return
