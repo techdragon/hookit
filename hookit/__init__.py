@@ -116,6 +116,8 @@ class HookHandler(SimpleHTTPRequestHandler):
         # logging.error(post_data)
 
         # payload = json.loads(post_data['payload'][0])
+        # this needs to be in a try catch and throw an error if non json content
+        # is returned
         payload = json.loads(str(data))
         logging.error(payload)
 
@@ -123,7 +125,6 @@ class HookHandler(SimpleHTTPRequestHandler):
             self.send_forbidden()
             return
 
-        payload = json.loads(payload)
         hook_trigger(payload)
 
         self.send_ok()
