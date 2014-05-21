@@ -95,15 +95,15 @@ class HookHandler(SimpleHTTPRequestHandler):
         # Reject all requests from non-Github IPs
         # if not in_whitelist(self.client_address[0]):
         if not webhook_from_github(self.client_address[0]):
-            logger.error("Webhook came from untrusted IP!")
+            logging.error("Webhook came from untrusted IP!")
             self.send_forbidden()
             return
 
         # Read POST data
         length = int(self.headers.getheader('Content-Length'))
         data = self.rfile.read(length)
-        logger.error(length)
-        logger.error(data)
+        logging.error(length)
+        logging.error(data)
 
         # Parse POST data and get payload
         payload = parse_qs(data).get('payload', None)
