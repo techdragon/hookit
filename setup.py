@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='hookit',
-    version='0.7.2',
+    version='0.7.3',
     packages=['hookit'],
     license='MIT License',
     keywords='git github webhook webhooks',

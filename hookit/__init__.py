@@ -41,7 +41,7 @@ github_info = gh.meta()
 WHITELIST = [
     (
         str(github_info['hooks'][0]).split('/')[0],
-        int(github_info['hooks'][0]).split('/')[1]
+        int(str(github_info['hooks'][0]).split('/')[1])
     )
 ]
 
