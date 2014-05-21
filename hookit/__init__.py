@@ -22,14 +22,17 @@ from subprocess import call
 
 from docopt import docopt
 from github3 import GitHub
+from netaddr import IPNetwork
+from netaddr import IPAddress
 
 from BaseHTTPServer import HTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 
-
 args = docopt(__doc__, version=0.1)
 
+# setup github API
 gh = GitHub()
+# call the github api to check what the valid IP addresses are.
 github_info = gh.meta()
 
 # this is the slice query to get the info out of the api return
@@ -64,6 +67,18 @@ def in_whitelist(client):
             return True
     return False
 
+def webhook_from_github(client):
+    # call the github api to check what the valid IP addresses are.
+    # this is inside the function to ensure we check against the valid
+    # IP addresses as they are at the time the webhook was recieved.
+    github_info = gh.meta()
+    github_network = str(github_info['hooks'][0])
+
+    if IPAddress(client) in IPNetwork(github_network):
+        return True
+    return False
+
+
 
 class HookHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -71,7 +86,8 @@ class HookHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
         # Reject all requests from non-Github IPs
-        if not in_whitelist(self.client_address[0]):
+        # if not in_whitelist(self.client_address[0]):
+        if not webhook_from_github(self.client_address[0]):
             self.send_forbidden()
             return
 
