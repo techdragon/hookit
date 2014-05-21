@@ -116,7 +116,7 @@ class HookHandler(SimpleHTTPRequestHandler):
         # logging.error(post_data)
 
         # payload = json.loads(post_data['payload'][0])
-        payload = json.loads(data)
+        payload = json.loads(str(data))
         logging.error(payload)
 
         if not payload:
