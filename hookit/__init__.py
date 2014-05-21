@@ -17,6 +17,7 @@ import struct
 import socket
 import logging
 import os.path
+import urllib
 from cgi import parse_qs
 from subprocess import call
 
@@ -103,11 +104,20 @@ class HookHandler(SimpleHTTPRequestHandler):
         length = int(self.headers.getheader('Content-Length'))
         data = self.rfile.read(length)
         logging.error(length)
+        logging.error(type(data))
         logging.error(data)
 
         # Parse POST data and get payload
         payload = parse_qs(data).get('payload', None)
-        logger.error(payload)
+        logging.error(payload)
+
+        post_data = urlparse.parse_qs(self.rfile.read(length).decode('utf-8'))
+        logging.error(type(post_data))
+        logging.error(post_data)
+
+        payload = json.loads(post_data['payload'][0])
+        logging.error(payload)
+
         if not payload:
             self.send_forbidden()
             return
