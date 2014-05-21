@@ -123,7 +123,7 @@ class HookHandler(SimpleHTTPRequestHandler):
             self.send_forbidden()
             return
 
-        payload = json.loads(payload[0])
+        payload = json.loads(payload)
         hook_trigger(payload)
 
         self.send_ok()
