@@ -2,7 +2,7 @@
 
     Usage:
       hookit [--scripts=<dir>] [--listen=<address>] [--port=<port>]
-    
+
     Options:
       -v --version        Show version
       --scripts=<dir>     Where to look for hook scripts [default: .]
@@ -12,6 +12,9 @@
 ## Execute scripts in any language
 
 On webhook the server will try to execute a script located at `<scripts>/<repository>/<branch>`.
+Note that the script `<branch>` should not have a suffix.
+If you want to execute a webhook for the branch `master`, your script must be named `master` not `master.sh`, or `master.py`, or `master.rb`, etc.
+On POSIX operating systems, set the executable permission on the script. ( `chmod +x <filename>` )
 The script will run with arguments containing repository, branch and commit hash. An example script may look like:
 
     #!/usr/bin/env python

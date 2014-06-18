@@ -34,9 +34,9 @@ gh = GitHub()
 
 
 def webhook_from_github(client):
-    # call the github api to check what the valid IP addresses are.
-    # this is inside the function to ensure we check against the valid
-    # IP addresses as they are at the time the webhook was recieved.
+    """Call the github api to check what the valid IP addresses are.
+     This is inside the function to ensure we check against the valid
+     IP addresses at the time the webhook was recieved."""
     github_info = gh.meta()
     for address in github_info['hooks']:
         if IPAddress(client) in IPNetwork(str(address)):
@@ -61,7 +61,6 @@ class HookHandler(SimpleHTTPRequestHandler):
         length = int(self.headers.getheader('Content-Length'))
         data = self.rfile.read(length)
         payload = json.loads(str(data))
-        logging.error(payload)
 
         if not payload:
             self.send_forbidden()
@@ -81,20 +80,23 @@ class HookHandler(SimpleHTTPRequestHandler):
 
 
 def hook_trigger(payload):
+    # Check if the webhook contains a reference to a repository
+    if not payload['ref']:
+        logging.error(
+            "Payload did not contain a refference to a repository. " +
+            "This is normal for the first webhook payload sent from " +
+            "GitHub after setting up your webhook."
+        )
+        logging.error("Payload : " + str(payload))
+        return
+
     ref = payload['ref']
-    logging.error(ref)
     after = payload['after']
-    logging.error(after)
     repo = payload['repository']['name']
-    logging.error(repo)
     branch = ref.split('/')[-1]
-    logging.error(branch)
 
     jail = os.path.abspath(args['--scripts'])
-    logging.error(jail)
     trigger = os.path.abspath('%s/%s/%s' % (jail, repo, branch))
-    logging.error(trigger)
-
 
     # Check if absolute trigger path resides in jail directory
     if not os.path.commonprefix([trigger, jail]).startswith(jail):
