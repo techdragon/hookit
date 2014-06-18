@@ -30,60 +30,17 @@ from BaseHTTPServer import HTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 
 args = docopt(__doc__, version=0.1)
-
-# setup github API
 gh = GitHub()
-# call the github api to check what the valid IP addresses are.
-github_info = gh.meta()
 
-# this is the slice query to get the info out of the api return
-# ip address
-# str(github_info['hooks'][0]).split('/')[0]
-# subnet size
-# str(github_info['hooks'][0]).split('/')[1]
-
-WHITELIST = [
-    (
-        str(github_info['hooks'][0]).split('/')[0],
-        int(str(github_info['hooks'][0]).split('/')[1])
-    )
-]
-
-
-def to_num(ip):
-    return struct.unpack('<L', socket.inet_aton(ip))[0]
-
-
-def to_netmask(ip, bits):
-    return to_num(ip) & ((2L << bits - 1) - 1)
-
-
-def in_network(ip, net):
-    return to_num(ip) & net == net
-
-
-def in_whitelist(client):
-    for ip, bit in WHITELIST:
-        if in_network(client, to_netmask(ip, bit)):
-            return True
-    return False
 
 def webhook_from_github(client):
     # call the github api to check what the valid IP addresses are.
     # this is inside the function to ensure we check against the valid
     # IP addresses as they are at the time the webhook was recieved.
     github_info = gh.meta()
-    github_network = str(github_info['hooks'][0])
-
-    logging.error(str(type(github_info)))
-    logging.error(str(github_info))
-    logging.error(str(type(client)))
-    logging.error(str(client))
-
-    if IPAddress(client) in IPNetwork(github_network):
-        logging.error("Returning True")
-        return True
-    logging.error("Returning False")
+    for address in github_info['hooks']:
+        if IPAddress(client) in IPNetwork(str(address)):
+            return True
     return False
 
 
@@ -103,21 +60,6 @@ class HookHandler(SimpleHTTPRequestHandler):
         # Read POST data
         length = int(self.headers.getheader('Content-Length'))
         data = self.rfile.read(length)
-        # logging.error(length)
-        # logging.error(type(data))
-        # logging.error(data)
-
-        # Parse POST data and get payload
-        # payload = parse_qs(data).get('payload', None)
-        # logging.error(payload)
-
-        # post_data = urlparse.parse_qs(self.rfile.read(length).decode('utf-8'))
-        # logging.error(type(post_data))
-        # logging.error(post_data)
-
-        # payload = json.loads(post_data['payload'][0])
-        # this needs to be in a try catch and throw an error if non json content
-        # is returned
         payload = json.loads(str(data))
         logging.error(payload)
 
